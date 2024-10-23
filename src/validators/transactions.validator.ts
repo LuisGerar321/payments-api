@@ -9,7 +9,7 @@ export const createTransactionSchema = Joi.object({
   recipientId: Joi.number().when("transactionType", {
     is: ETransactionType.PAY,
     then: Joi.required(),
-    otherwise: Joi.optional(),
+    otherwise: Joi.forbidden(),
   }),
   externalPaymentRef: Joi.string().when("transactionType", {
     is: ETransactionType.EXTERNAL_PAYMENT,
@@ -20,7 +20,7 @@ export const createTransactionSchema = Joi.object({
   status: Joi.string().when("transactionType", {
     is: ETransactionType.ADD,
     then: Joi.valid(ETransactionStatus.CONFIRMED).default(ETransactionStatus.CONFIRMED),
-    otherwise: Joi.valid(ETransactionStatus.PENDING).default(ETransactionStatus.PENDING).required(),
+    otherwise: Joi.valid(ETransactionStatus.PENDING).default(ETransactionStatus.PENDING),
   }),
   description: Joi.string().optional(),
 });

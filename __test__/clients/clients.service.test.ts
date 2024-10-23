@@ -73,7 +73,6 @@ describe("createAClient", () => {
       await createAClient(clientMock.name, clientMock.email, clientMock.phone, clientMock.citizenIdentityDocumentNumber);
     } catch (error) {
       //Assert
-      console.log(error);
       expect(error).toBeInstanceOf(ErrorResponse);
       expect(Clients.create).not.toHaveBeenCalled();
     }
