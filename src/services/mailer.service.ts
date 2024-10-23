@@ -35,7 +35,7 @@ export class Mailer {
 
           reject(
             new ErrorResponse({
-              status: 500,
+              code: 500,
               message: `Error in sending a email: .${error?.message}`,
               details: error,
             }),

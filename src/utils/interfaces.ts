@@ -4,3 +4,8 @@ export interface IMailerSendEmail {
   text?: string;
   html?: any;
 }
+
+export enum EStatus {
+  SUCCESS = "success",
+  ERROR = "error",
+}

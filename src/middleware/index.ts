@@ -10,7 +10,7 @@ export const validateBodyMiddleware = (schemaValidator: Joi.ObjectSchema<any>) =
     if (isValidate?.error) {
       return res.status(400).send(
         new ErrorResponse({
-          status: 400,
+          code: 400,
           message: "Bad request in body payload.",
           details: isValidate.error.message,
         }),

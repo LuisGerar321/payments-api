@@ -3,7 +3,6 @@ import ErrorResponse from "../utils/errors";
 import Clients from "../models/clients.model";
 import { Mailer } from "./mailer.service";
 import { newUserTemplate } from "../assets/templates";
-import { error } from "console";
 import sequelize from "../database";
 
 export const findAllClients = async () => {
@@ -14,7 +13,7 @@ export const findAllClients = async () => {
     return clients;
   } catch (err) {
     throw new ErrorResponse({
-      status: 500,
+      code: 500,
       message: "Error retrieving clients.",
       details: err,
     });
@@ -47,7 +46,7 @@ export const createAClient = async (name: string, email: string, phone: string, 
 
     if (isEmailTaken) {
       throw new ErrorResponse({
-        status: 400,
+        code: 400,
         message: "Error when triying to created a new user, email is in use! Try with other.",
         details: {},
       });
@@ -78,7 +77,7 @@ export const createAClient = async (name: string, email: string, phone: string, 
 
     if (err instanceof Error)
       throw new ErrorResponse({
-        status: 500,
+        code: 500,
         message: "Error creating client.",
         details: {
           name: err?.name,
@@ -88,7 +87,7 @@ export const createAClient = async (name: string, email: string, phone: string, 
       });
 
     throw new ErrorResponse({
-      status: 500,
+      code: 500,
       message: "Error creating client.",
       details: err,
     });
@@ -99,7 +98,7 @@ export const findClientsById = async () => {
   try {
   } catch (err) {
     throw new ErrorResponse({
-      status: 500,
+      code: 500,
       message: "Error retrieving clients.",
       details: err,
     });
