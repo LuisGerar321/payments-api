@@ -4,6 +4,7 @@ import Clients from "../models/clients.model";
 import { Mailer } from "./mailer.service";
 import { newUserTemplate } from "../assets/templates";
 import sequelize from "../database";
+import { EStatus } from "../utils/interfaces";
 
 export const findAllClients = async () => {
   try {
@@ -47,7 +48,8 @@ export const createAClient = async (name: string, email: string, phone: string, 
     if (isEmailTaken) {
       throw new ErrorResponse({
         code: 400,
-        message: "Error when triying to created a new user, email is in use! Try with other.",
+        status: EStatus.ERROR,
+        message: "Error when trying to create a new user, email is in use! Try with another.",
         details: {},
       });
     }
@@ -72,7 +74,6 @@ export const createAClient = async (name: string, email: string, phone: string, 
     return newClient;
   } catch (err) {
     if (transaction === undefined) await t.rollback();
-    console.error("Error creating client:", err);
     if (err instanceof ErrorResponse) throw err;
 
     if (err instanceof Error)
