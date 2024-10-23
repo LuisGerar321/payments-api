@@ -1,6 +1,8 @@
 import { Op } from "sequelize";
 import ErrorResponse from "../utils/errors";
 import Clients from "../models/clients.model";
+import { Mailer } from "./mailer.service";
+import { newUserTemplate } from "../assets/templates";
 
 export const findAllClients = async () => {
   try {
@@ -19,13 +21,34 @@ export const findAllClients = async () => {
 
 export const createAClient = async (name: string, email: string, phone: string): Promise<Clients> => {
   try {
-    let newClient: Clients | null = null;
+    const isEmailTaken = await Clients.findOne({
+      where: {
+        email,
+      },
+      attributes: [],
+    });
 
-    newClient = await Clients.create({
+    if (isEmailTaken) {
+      throw new ErrorResponse({
+        status: 400,
+        message: "Error when triying to created a new user, email is in use! Try with other.",
+        details: {},
+      });
+    }
+
+    const newClient = await Clients.create({
       name,
       email,
       phone,
     });
+
+    const mailer = Mailer.getInstance();
+    await mailer.sendEmail({
+      to: email,
+      subject: "Bienvenido a Payments App",
+      html: newUserTemplate,
+    });
+
     return newClient;
   } catch (err) {
     console.error("Error creating client:", err);

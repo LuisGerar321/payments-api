@@ -1,7 +1,7 @@
 import Joi from "joi";
 
 export const createClientSchema = Joi.object({
+  name: Joi.string().required(),
   email: Joi.string().email().required(),
-  body: Joi.string().required(),
-  replyToId: Joi.number().optional().allow("null"),
+  phone: Joi.string().alphanum().required(),
 });
