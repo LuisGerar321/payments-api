@@ -3,21 +3,21 @@ import { ETransactionStatus, ETransactionType } from "../utils/interfaces";
 
 export const createTransactionSchema = Joi.object({
   senderId: Joi.number().required(),
-  transactionType: Joi.string()
+  type: Joi.string()
     .valid(...Object.values(ETransactionType))
     .required(),
-  recipientId: Joi.number().when("transactionType", {
+  recipientId: Joi.number().when("type", {
     is: ETransactionType.PAY,
     then: Joi.required(),
     otherwise: Joi.forbidden(),
   }),
-  externalPaymentRef: Joi.string().when("transactionType", {
+  externalPaymentRef: Joi.string().when("type", {
     is: ETransactionType.EXTERNAL_PAYMENT,
     then: Joi.required(),
     otherwise: Joi.forbidden(),
   }),
   amount: Joi.number().greater(0).max(10000).required(),
-  status: Joi.string().when("transactionType", {
+  status: Joi.string().when("type", {
     is: ETransactionType.ADD,
     then: Joi.valid(ETransactionStatus.CONFIRMED).default(ETransactionStatus.CONFIRMED),
     otherwise: Joi.valid(ETransactionStatus.PENDING).default(ETransactionStatus.PENDING),

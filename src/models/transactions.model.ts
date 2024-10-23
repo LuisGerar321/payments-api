@@ -52,7 +52,7 @@ export default class Transactions extends Model {
       isIn: [Object.values(ETransactionType)],
     },
   })
-  transactionType!: ETransactionType;
+  type!: ETransactionType;
 
   @Column({
     type: DataType.STRING,

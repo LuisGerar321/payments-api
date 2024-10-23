@@ -29,7 +29,7 @@ describe("Transaction Payload Validation", () => {
       // Arrange
       const incorrectPayload = {
         senderId: 1,
-        transactionType: "add",
+        type: "add",
         recipientId: 2, // not allowed in 'Add' transactions
         amount: 1,
       };
@@ -46,7 +46,7 @@ describe("Transaction Payload Validation", () => {
       // Arrange
       const incorrectPayload = {
         senderId: 1,
-        transactionType: "pay",
+        type: "pay",
         recipientId: 2,
         amount: 1,
         status: "confirmed", // 'Pay' transactions require pending status until 2FA
@@ -64,7 +64,7 @@ describe("Transaction Payload Validation", () => {
       // Arrange
       const incorrectPayload = {
         senderId: 1,
-        transactionType: "external_payment",
+        type: "external_payment",
         amount: 1, // missing 'externalPaymentRef'
       };
 
@@ -82,7 +82,7 @@ describe("Transaction Payload Validation", () => {
       // Arrange
       const validPayTransaction = {
         senderId: 1,
-        transactionType: "pay",
+        type: "pay",
         recipientId: 2,
         amount: 1,
       };
@@ -98,7 +98,7 @@ describe("Transaction Payload Validation", () => {
       // Arrange
       const validExternalTransaction = {
         senderId: 1,
-        transactionType: "external_payment",
+        type: "external_payment",
         externalPaymentRef: "123dsvc",
         amount: 1,
       };
@@ -114,7 +114,7 @@ describe("Transaction Payload Validation", () => {
       // Arrange
       const validAddTransaction = {
         senderId: 1,
-        transactionType: "add",
+        type: "add",
         amount: 1,
       };
 

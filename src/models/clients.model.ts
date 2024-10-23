@@ -37,6 +37,7 @@ export default class Clients extends Model {
   @Column({
     type: DataType.FLOAT,
     allowNull: false,
+    defaultValue: 0,
   })
   balance!: number;
 }

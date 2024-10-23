@@ -1,12 +1,10 @@
 import { Router } from "express";
 import { validateBodyMiddleware } from "../middleware";
-// import { TransactionsController } from "../controllers/transactions.controller";
 import { createTransactionSchema } from "../validators/transactions.validator";
+import { TransactionsController } from "../controllers/transactions.controller";
 
 const TransactionsRouter = Router();
 
-// TransactionsRouter.get("/", TransactionsController.handleGetAll);
-
-TransactionsRouter.post("/", validateBodyMiddleware(createTransactionSchema));
+TransactionsRouter.post("/", validateBodyMiddleware(createTransactionSchema), TransactionsController.handleCreate);
 
 export default TransactionsRouter;
