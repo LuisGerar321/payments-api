@@ -33,4 +33,10 @@ export default class Clients extends Model {
     allowNull: false,
   })
   citizenIdentityDocumentNumber!: string;
+
+  @Column({
+    type: DataType.FLOAT,
+    allowNull: false,
+  })
+  balance!: number;
 }

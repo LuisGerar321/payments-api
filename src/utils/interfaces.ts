@@ -9,3 +9,14 @@ export enum EStatus {
   SUCCESS = "success",
   ERROR = "error",
 }
+
+export enum ETransactionType {
+  ADD = "add",
+  PAY = "pay",
+  EXTERNAL_PAYMENT = "external_payment",
+}
+
+export enum ETransactionStatus {
+  PENDING = "pending",
+  CONFIRMED = "confirmed",
+}

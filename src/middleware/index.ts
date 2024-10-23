@@ -16,6 +16,7 @@ export const validateBodyMiddleware = (schemaValidator: Joi.ObjectSchema<any>) =
         }),
       );
     }
+    res.send(isValidate);
     next();
   };
 };
