@@ -32,3 +32,4 @@ export const setupDB = async (force = false): Promise<void> => {
       });
   });
 };
+export default sequelize;

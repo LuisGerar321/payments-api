@@ -3,7 +3,7 @@ import nodemailer from "nodemailer";
 import ErrorResponse from "../utils/errors";
 import { IMailerSendEmail } from "../utils/interfaces";
 
-const { email } = config;
+const { email, enviroment } = config;
 
 export class Mailer {
   private static instance: Mailer;
@@ -12,8 +12,8 @@ export class Mailer {
   constructor() {
     this.transporter = nodemailer.createTransport({
       host: email.host,
-      port: Number(email.port),
-      secure: email.port === "465", // true if port 465 (https)
+      port: enviroment === "prod" ? 465 : 587,
+      secure: enviroment === "prod",
       auth: {
         user: email.user,
         pass: email.pass,

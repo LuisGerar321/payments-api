@@ -14,8 +14,8 @@ export class ClientsController {
 
   public static async handleCreate(req: Request, res: Response) {
     try {
-      const { email, body, replyToId } = req.body;
-      const clients = await createAClient(email, body, replyToId);
+      const { name, email, phone } = req.body;
+      const clients = await createAClient(name, email, phone);
       res.status(201).send(clients);
     } catch (error) {
       ClientsController.handleError(res, error);

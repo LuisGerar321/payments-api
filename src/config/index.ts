@@ -4,6 +4,7 @@ import { Dialect } from "sequelize/types/sequelize";
 dotenvConfig();
 
 export const config = {
+  enviroment: process.env?.ENVIROMENT === "prod" ? "prod" : "dev",
   server: {
     port: Number(process.env.HOST_PORT) || 3000,
     host: process.env.HOST || "localhost",
@@ -21,6 +22,5 @@ export const config = {
     user: process.env.EMAIL_USER,
     pass: process.env.EMAIL_PASS,
     subject: process.env.EMAIL_SUBJECT || "Payments Request",
-    port: process.env.EMAIL_MAILER_PORT || 25,
   },
 };
