@@ -3,7 +3,7 @@ import Clients from "../../src/models/clients.model";
 import { Mailer } from "../../src/services/mailer.service";
 import sequelize from "../../src/database";
 import ErrorResponse from "../../src/utils/errors";
-import { EStatus } from "../../src/utils/interfaces";
+import { createClientSchema } from "../../src/validators/clients.validator";
 
 jest.mock("../../src/models/clients.model");
 jest.mock("../../src/services/mailer.service");
@@ -19,6 +19,7 @@ describe("createAClient", () => {
     name: "test",
     email: "test@example.com",
     phone: "99999999",
+    citizenIdentityDocumentNumber: "123456789sa",
   };
   const clientSeqModelResponse = {
     id: 1,
@@ -49,7 +50,7 @@ describe("createAClient", () => {
     });
 
     //Act
-    const client = await createAClient(clientMock.name, clientMock.email, clientMock.phone);
+    const client = await createAClient(clientMock.name, clientMock.email, clientMock.phone, clientMock.citizenIdentityDocumentNumber);
 
     //Assert
     expect(client).toEqual(clientSeqModelResponse);
@@ -69,11 +70,28 @@ describe("createAClient", () => {
       (Clients.findOne as jest.Mock).mockResolvedValue({ id: 1 });
 
       //Act
-      await createAClient(clientMock.name, clientMock.email, clientMock.phone);
+      await createAClient(clientMock.name, clientMock.email, clientMock.phone, clientMock.citizenIdentityDocumentNumber);
     } catch (error) {
       //Assert
+      console.log(error);
       expect(error).toBeInstanceOf(ErrorResponse);
       expect(Clients.create).not.toHaveBeenCalled();
     }
+  });
+
+  it("should thow an error case client body payload is not corret", async () => {
+    //Arrange
+    const incorrectPayload = {
+      email: "test@hotmail.com",
+      phone: "999928521",
+      citizenIdentityDocumentNumber: "12354dsda",
+    };
+
+    //Act
+    const validatePayload = createClientSchema.validate(incorrectPayload);
+
+    //Assert
+    expect(validatePayload).toHaveProperty("error");
+    expect(validatePayload.error?.message).toEqual('"name" is required');
   });
 });

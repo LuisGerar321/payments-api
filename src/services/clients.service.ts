@@ -40,7 +40,7 @@ export const isEmailInUse = async (email: string, transaction: Transaction | und
   }
 };
 
-export const createAClient = async (name: string, email: string, phone: string, transaction = undefined): Promise<Clients> => {
+export const createAClient = async (name: string, email: string, phone: string, citizenIdentityDocumentNumber: string, transaction = undefined): Promise<Clients> => {
   let t = transaction ?? (await sequelize.transaction());
   try {
     const isEmailTaken = await isEmailInUse(email, t);
@@ -59,6 +59,7 @@ export const createAClient = async (name: string, email: string, phone: string, 
         name,
         email,
         phone,
+        citizenIdentityDocumentNumber,
       },
       { transaction: t },
     );

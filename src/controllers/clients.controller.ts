@@ -15,8 +15,8 @@ export class ClientsController {
 
   public static async handleCreate(req: Request, res: Response) {
     try {
-      const { name, email, phone } = req.body;
-      const clients = await createAClient(name, email, phone);
+      const { name, email, phone, citizenIdentityDocumentNumber } = req.body;
+      const clients = await createAClient(name, email, phone, citizenIdentityDocumentNumber);
       res.status(200).json({
         status: EStatus.SUCCESS,
         code: 200,

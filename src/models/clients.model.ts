@@ -27,4 +27,10 @@ export default class Clients extends Model {
     allowNull: false,
   })
   phone!: string;
+
+  @Column({
+    type: DataType.STRING,
+    allowNull: false,
+  })
+  citizenIdentityDocumentNumber!: string;
 }
