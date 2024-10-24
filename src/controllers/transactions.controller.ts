@@ -9,9 +9,9 @@ export class TransactionsController {
       const { senderId, recipientId, type, status, amount, externalPaymentRef, description } = req.body;
       console.log(status);
       const transactions = await createATransaction({ senderId, recipientId, type, status, amount, externalPaymentRef, description });
-      res.status(200).json({
+      res.status(201).json({
         status: EStatus.SUCCESS,
-        code: 200,
+        code: 201,
         message: "Transaction Created Successfully",
         data: transactions,
       });
