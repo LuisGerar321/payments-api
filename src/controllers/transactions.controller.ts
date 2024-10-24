@@ -7,6 +7,7 @@ export class TransactionsController {
   public static async handleCreate(req: Request, res: Response) {
     try {
       const { senderId, recipientId, type, status, amount, externalPaymentRef, description } = req.body;
+      console.log(status);
       const transactions = await createATransaction({ senderId, recipientId, type, status, amount, externalPaymentRef, description });
       res.status(200).json({
         status: EStatus.SUCCESS,

@@ -4,7 +4,7 @@ import { server } from "./server";
 async function main() {
   try {
     await server();
-    await setupDB(true);
+    await setupDB();
   } catch (error) {
     console.error(error);
   }
