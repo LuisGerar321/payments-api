@@ -1,4 +1,5 @@
-import { AutoIncrement, Column, DataType, Model, PrimaryKey, Table } from "sequelize-typescript";
+import { AutoIncrement, Column, DataType, HasMany, Model, PrimaryKey, Table } from "sequelize-typescript";
+import Transactions from "./transactions.model";
 
 @Table
 export default class Clients extends Model {
@@ -40,4 +41,7 @@ export default class Clients extends Model {
     defaultValue: 0,
   })
   balance!: number;
+
+  @HasMany(() => Transactions)
+  transactions!: Transactions[];
 }

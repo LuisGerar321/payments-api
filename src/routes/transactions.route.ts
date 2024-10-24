@@ -7,5 +7,7 @@ const TransactionsRouter = Router();
 
 TransactionsRouter.post("/", validateTokenMiddleware, validateBodyMiddleware(createTransactionSchema), TransactionsController.handleCreate);
 TransactionsRouter.patch("/:id", validateTokenMiddleware, validateBodyMiddleware(confirmTransactionSchema), TransactionsController.handleConfirm);
+TransactionsRouter.get("/self", validateTokenMiddleware, TransactionsController.handleGetSelfTransaction);
+TransactionsRouter.get("/self-balance", validateTokenMiddleware, TransactionsController.handleGetSelfBalance);
 
 export default TransactionsRouter;

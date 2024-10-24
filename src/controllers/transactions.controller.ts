@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import ErrorResponse from "../utils/errors";
 import { EStatus, IRequest } from "../utils/interfaces";
-import { confirmATransaction, createATransaction } from "../services/transactions.service";
+import { confirmATransaction, createATransaction, getSelfBalance, getSelfTransactions } from "../services/transactions.service";
 
 export class TransactionsController {
   public static async handleCreate(req: Request, res: Response) {
@@ -13,6 +13,35 @@ export class TransactionsController {
         code: 201,
         message: "Transaction Created Successfully",
         data: transactions,
+      });
+    } catch (error) {
+      TransactionsController.handleError(res, error);
+    }
+  }
+  public static async handleGetSelfTransaction(req: IRequest, res: Response) {
+    try {
+      const { clientId } = req.session;
+      const myTransactions = await getSelfTransactions(Number(clientId));
+      res.status(200).json({
+        status: EStatus.SUCCESS,
+        code: 200,
+        message: "Self Transaction Get Successfully",
+        data: myTransactions,
+      });
+    } catch (error) {
+      TransactionsController.handleError(res, error);
+    }
+  }
+
+  public static async handleGetSelfBalance(req: IRequest, res: Response) {
+    try {
+      const { clientId } = req.session;
+      const myBalance = await getSelfBalance(Number(clientId));
+      res.status(200).json({
+        status: EStatus.SUCCESS,
+        code: 200,
+        message: "Self Balance Get Successfully",
+        data: myBalance,
       });
     } catch (error) {
       TransactionsController.handleError(res, error);

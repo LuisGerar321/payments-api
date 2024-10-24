@@ -1,4 +1,5 @@
 import { Request } from "express";
+import Transactions from "../models/transactions.model";
 
 export interface IMailerSendEmail {
   to: string;
@@ -30,4 +31,14 @@ export interface IAuthClient {
 
 export interface IRequest extends Request {
   session?: any;
+}
+
+export interface ISelfTransactions {
+  sent: Transactions[];
+  received: Transactions[];
+}
+export interface ISelfBalance {
+  balance: number;
+  sent: number;
+  received: number;
 }

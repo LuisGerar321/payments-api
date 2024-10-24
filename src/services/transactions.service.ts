@@ -1,17 +1,110 @@
 import ErrorResponse from "../utils/errors";
 import sequelize from "../database";
 import Transactions from "../models/transactions.model";
-import { ETransactionStatus, ETransactionType } from "../utils/interfaces";
+import { ETransactionStatus, ETransactionType, ISelfBalance, ISelfTransactions } from "../utils/interfaces";
 import Clients from "../models/clients.model";
 import { Mailer } from "./mailer.service";
 import { getToken, storeToken } from "./redis.service";
 import { pendingTransactionTemplate } from "../assets/templates";
-import { Op } from "sequelize";
+import { Op, Transaction as SeqTransaction } from "sequelize";
+
+export const getSelfTransactions = async (clientId: number): Promise<ISelfTransactions> => {
+  try {
+    const transactionSent = await Transactions.findAll({
+      where: {
+        senderId: clientId,
+      },
+      include: [
+        {
+          model: Clients,
+          as: "recipient",
+          attributes: ["id", "name", "email"],
+        },
+      ],
+      order: [["createdAt", "DESC"]],
+    });
+
+    const transactionReceived = await Transactions.findAll({
+      where: {
+        recipientId: clientId,
+      },
+      include: [
+        {
+          model: Clients,
+          as: "sender",
+          attributes: ["id", "name", "email"],
+        },
+      ],
+      order: [["createdAt", "DESC"]],
+    });
+
+    return { sent: transactionSent, received: transactionReceived };
+  } catch (err) {
+    if (err instanceof Error)
+      throw new ErrorResponse({
+        code: 500,
+        message: "Error creating client.",
+        details: {
+          name: err?.name,
+          message: err?.message,
+          stack: err?.stack,
+        },
+      });
+
+    throw new ErrorResponse({
+      code: 500,
+      message: "Error creating client.",
+      details: err,
+    });
+  }
+};
+
+export const getSelfBalance = async (clientId: number): Promise<ISelfBalance> => {
+  try {
+    const selfBalance = await Clients.findOne({
+      where: {
+        id: clientId,
+      },
+      attributes: ["balance"],
+    });
+
+    const selfTransaction = await getSelfTransactions(clientId);
+    const selfSent = selfTransaction.sent.reduce((sent, currSentTran) => {
+      return sent + currSentTran.amount;
+    }, 0);
+    const selfReceived = selfTransaction.sent.reduce((received, currReceivedTran) => {
+      return received + currReceivedTran.amount;
+    }, 0);
+
+    return {
+      balance: selfBalance?.balance || 0,
+      sent: selfSent,
+      received: selfReceived,
+    };
+  } catch (err) {
+    if (err instanceof Error)
+      throw new ErrorResponse({
+        code: 500,
+        message: "Error creating client.",
+        details: {
+          name: err?.name,
+          message: err?.message,
+          stack: err?.stack,
+        },
+      });
+
+    throw new ErrorResponse({
+      code: 500,
+      message: "Error creating client.",
+      details: err,
+    });
+  }
+};
 
 export const createATransaction = async (
   { senderId, recipientId, type, status, amount, externalPaymentRef, description }: Partial<Transactions>,
-  transaction = undefined,
-): Promise<Transactions | void> => {
+  transaction: SeqTransaction | undefined = undefined,
+): Promise<Transactions> => {
   let t = transaction ?? (await sequelize.transaction());
   try {
     let isPayTransaction = type === ETransactionType.PAY;
@@ -135,7 +228,7 @@ export const createATransaction = async (
   }
 };
 
-export const confirmATransaction = async (clientId: number, transactionId: number, token: string, transaction = undefined): Promise<number> => {
+export const confirmATransaction = async (clientId: number, transactionId: number, token: string, transaction: SeqTransaction | undefined = undefined): Promise<number> => {
   let t = transaction ?? (await sequelize.transaction());
 
   try {
