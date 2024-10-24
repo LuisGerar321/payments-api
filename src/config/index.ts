@@ -23,4 +23,8 @@ export const config = {
     pass: process.env.EMAIL_PASS,
     subject: process.env.EMAIL_SUBJECT || "Payments Request",
   },
+  jwt: {
+    secret: process.env.JWT_TOKEN_SECRET || "secretKey",
+    exp: process.env.JWT_TOKEN_EXP || "1h",
+  },
 };

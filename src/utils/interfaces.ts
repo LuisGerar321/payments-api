@@ -20,3 +20,8 @@ export enum ETransactionStatus {
   PENDING = "pending",
   CONFIRMED = "confirmed",
 }
+
+export interface IAuthClient {
+  email: string;
+  citizenIdentityDocumentNumber: string;
+}
