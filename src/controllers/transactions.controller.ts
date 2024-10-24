@@ -22,8 +22,9 @@ export class TransactionsController {
   public static async handleConfirm(req: IRequest, res: Response) {
     try {
       const { token } = req.body;
+      const { id: transactionId } = req.params;
       const { clientId } = req.session;
-      const comfirmedTransaction = await confirmATransaction(Number(clientId), token);
+      const comfirmedTransaction = await confirmATransaction(Number(clientId), Number(transactionId), token);
       res.status(200).json({
         status: EStatus.SUCCESS,
         code: 200,

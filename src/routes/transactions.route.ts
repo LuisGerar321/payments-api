@@ -6,6 +6,6 @@ import { TransactionsController } from "../controllers/transactions.controller";
 const TransactionsRouter = Router();
 
 TransactionsRouter.post("/", validateTokenMiddleware, validateBodyMiddleware(createTransactionSchema), TransactionsController.handleCreate);
-TransactionsRouter.patch("/", validateTokenMiddleware, validateBodyMiddleware(confirmTransactionSchema), TransactionsController.handleConfirm);
+TransactionsRouter.patch("/:id", validateTokenMiddleware, validateBodyMiddleware(confirmTransactionSchema), TransactionsController.handleConfirm);
 
 export default TransactionsRouter;

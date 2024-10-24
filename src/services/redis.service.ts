@@ -18,7 +18,7 @@ export const storeToken = async (transactionId: number): Promise<string> => {
 export const getToken = async (token: string): Promise<number | null> => {
   try {
     const tokenValid = await redis.get(token);
-    return tokenValid ? Number(token) : null;
+    return tokenValid ? Number(tokenValid) : null;
   } catch (err) {
     throw err;
   }

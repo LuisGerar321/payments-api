@@ -102,7 +102,7 @@ export const createATransaction = async (
 
     if (!isAddTransaction) {
       const mailer = Mailer.getInstance();
-      const token = await storeToken(sender.id);
+      const token = await storeToken(newTransaction.id);
       await mailer.sendEmail({
         to: sender?.email,
         subject: "Payments App: Confirm your transaction now!",
@@ -135,7 +135,7 @@ export const createATransaction = async (
   }
 };
 
-export const confirmATransaction = async (clientId: number, token: string, transaction = undefined): Promise<number> => {
+export const confirmATransaction = async (clientId: number, transactionId: number, token: string, transaction = undefined): Promise<number> => {
   let t = transaction ?? (await sequelize.transaction());
 
   try {
@@ -159,7 +159,7 @@ export const confirmATransaction = async (clientId: number, token: string, trans
 
     const isValidToken = await getToken(token);
 
-    if (!isValidToken)
+    if (!isValidToken || isValidToken !== transactionId)
       throw new ErrorResponse({
         code: 401,
         message: "Unauthorized",
@@ -170,7 +170,7 @@ export const confirmATransaction = async (clientId: number, token: string, trans
         },
       });
 
-    const transaction = await Transactions.findOne({
+    const transactionRecord = await Transactions.findOne({
       where: {
         id: isValidToken,
         senderId: clientId,
@@ -193,7 +193,7 @@ export const confirmATransaction = async (clientId: number, token: string, trans
       transaction: t,
     });
 
-    if (!transaction || !transaction.sender)
+    if (!transactionRecord || !transactionRecord.sender)
       throw new ErrorResponse({
         code: 400,
         message: "Not Found",
@@ -204,8 +204,8 @@ export const confirmATransaction = async (clientId: number, token: string, trans
         },
       });
 
-    const { sender } = transaction;
-    const { amount: amountToTransfer } = transaction;
+    const { sender } = transactionRecord;
+    const { amount: amountToTransfer } = transactionRecord;
     const isClientFundsSufficient: boolean = sender.balance >= amountToTransfer;
 
     if (!isClientFundsSufficient)
@@ -219,12 +219,13 @@ export const confirmATransaction = async (clientId: number, token: string, trans
         },
       });
 
-    const isExternalPayment: boolean = transaction.type === ETransactionType.EXTERNAL_PAYMENT;
+    const isExternalPayment: boolean = transactionRecord.type === ETransactionType.EXTERNAL_PAYMENT;
     const newSenderBalance = sender.balance - amountToTransfer;
 
     if (isExternalPayment) {
       await sender.update({ balance: newSenderBalance }, { transaction: t });
       //TODO: Extra Steps to handle the third party payment amount (Just in the future)
+      await transactionRecord.update({ status: ETransactionStatus.CONFIRMED }, { transaction: t });
 
       if (transaction === undefined) await t.commit();
 
@@ -232,7 +233,7 @@ export const confirmATransaction = async (clientId: number, token: string, trans
     }
 
     //Payment Transaction for recipient from this app
-    const { recipient } = transaction;
+    const { recipient } = transactionRecord;
 
     if (!recipient) {
       throw new ErrorResponse({
@@ -249,7 +250,10 @@ export const confirmATransaction = async (clientId: number, token: string, trans
     const newRecipientBalance = recipient.balance + amountToTransfer;
     await sender.update({ balance: newSenderBalance }, { transaction: t });
     await recipient.update({ balance: newRecipientBalance }, { transaction: t });
+    await transactionRecord.update({ status: ETransactionStatus.CONFIRMED }, { transaction: t });
+
     if (transaction === undefined) await t.commit();
+
     return newSenderBalance;
   } catch (err) {
     if (transaction === undefined) await t.rollback();
