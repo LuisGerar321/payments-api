@@ -5,20 +5,20 @@ const generateRandomToken = (): string => {
   return Randomstring.generate(6);
 };
 
-export const storeToken = async (key: string): Promise<string> => {
+export const storeToken = async (transactionId: number): Promise<string> => {
   const token = generateRandomToken();
   try {
-    await redis.setEx(key, 300, token); // Expiration of 300 seconds
+    await redis.setEx(token, 300, String(transactionId)); // Expiration of 300 seconds
     return token;
   } catch (err) {
     throw err;
   }
 };
 
-export const getToken = async (key: string): Promise<string | null> => {
+export const getToken = async (token: string): Promise<number | null> => {
   try {
-    const token = await redis.get(key);
-    return token;
+    const tokenValid = await redis.get(token);
+    return tokenValid ? Number(token) : null;
   } catch (err) {
     throw err;
   }
