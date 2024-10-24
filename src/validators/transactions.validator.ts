@@ -24,3 +24,7 @@ export const createTransactionSchema = Joi.object({
   }),
   description: Joi.string().optional(),
 });
+
+export const confirmTransactionSchema = Joi.object({
+  token: Joi.string().min(6).max(6).required(),
+});
