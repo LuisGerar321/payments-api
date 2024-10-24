@@ -27,4 +27,5 @@ export const config = {
     secret: process.env.JWT_TOKEN_SECRET || "secretKey",
     exp: process.env.JWT_TOKEN_EXP || "1h",
   },
+  redisUrl: process.env.REDIS_URL || "redis://localhost:6379",
 };
