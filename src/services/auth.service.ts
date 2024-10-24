@@ -28,15 +28,16 @@ export const authenticateClient = async (client: IAuthClient) => {
       details: {},
     });
 
-  const token = generateToken(client);
-  const refreshToken = generateToken(client, "3h");
+  const clientParsed = clientDB.toJSON();
+  const token = generateToken(clientParsed);
+  const refreshToken = generateToken(clientParsed, "3h");
 
   return { token, refreshToken };
 };
 
-export const verifyToken = (token: string): { valid: boolean; message?: string; decoded?: object } => {
+export const verifyToken = (token: string): { valid: boolean; message?: string; decoded?: JwtPayload | string } => {
   try {
-    const decoded = jwt.verify(token, secret) as JwtPayload;
+    const decoded = jwt.verify(token, secret);
     return { valid: true, decoded };
   } catch (err: any) {
     if (err.name === "TokenExpiredError") {
