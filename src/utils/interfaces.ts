@@ -1,3 +1,5 @@
+import { Request } from "express";
+
 export interface IMailerSendEmail {
   to: string;
   subject: string;
@@ -24,4 +26,8 @@ export enum ETransactionStatus {
 export interface IAuthClient {
   email: string;
   citizenIdentityDocumentNumber: string;
+}
+
+export interface IRequest extends Request {
+  session?: any;
 }
