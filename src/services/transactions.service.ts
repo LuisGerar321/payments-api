@@ -3,6 +3,8 @@ import sequelize from "../database";
 import Transactions from "../models/transactions.model";
 import { ETransactionType } from "../utils/interfaces";
 import Clients from "../models/clients.model";
+import { Mailer } from "./mailer.service";
+import { storeToken } from "./redis.service";
 
 export const createATransaction = async (
   { senderId, recipientId, type, status, amount, externalPaymentRef, description }: Partial<Transactions>,
@@ -74,6 +76,11 @@ export const createATransaction = async (
     const newTransaction = await Transactions.create({ senderId, recipientId, type, status, amount, externalPaymentRef, description }, { transaction: t });
 
     if (isAddTransaction) await sender.update({ balance: sender.balance + newTransaction.amount }, { transaction: t });
+
+    if (!isAddTransaction) {
+      const mailer = Mailer.getInstance();
+      const token = await storeToken(String(sender.id));
+    }
 
     if (transaction === undefined) await t.commit();
     return newTransaction;
