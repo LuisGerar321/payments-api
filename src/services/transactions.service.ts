@@ -13,6 +13,9 @@ export const getSelfTransactions = async (clientId: number): Promise<ISelfTransa
     const transactionSent = await Transactions.findAll({
       where: {
         senderId: clientId,
+        type: {
+          [Op.ne]: ETransactionType.ADD,
+        },
       },
       include: [
         {
@@ -107,8 +110,8 @@ export const createATransaction = async (
 ): Promise<Transactions> => {
   let t = transaction ?? (await sequelize.transaction());
   try {
-    let isPayTransaction = type === ETransactionType.PAY;
-    let isAddTransaction = type === ETransactionType.ADD;
+    const isPayTransaction = type === ETransactionType.PAY;
+    const isAddTransaction = type === ETransactionType.ADD;
 
     const badErrCreation = {
       code: 400,

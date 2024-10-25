@@ -2,7 +2,6 @@ import Joi from "joi";
 import { ETransactionStatus, ETransactionType } from "../utils/interfaces";
 
 export const createTransactionSchema = Joi.object({
-  senderId: Joi.number().required(),
   type: Joi.string()
     .valid(...Object.values(ETransactionType))
     .required(),

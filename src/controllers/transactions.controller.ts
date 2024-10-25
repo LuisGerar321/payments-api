@@ -1,13 +1,16 @@
 import { Request, Response } from "express";
 import ErrorResponse from "../utils/errors";
-import { EStatus, IRequest } from "../utils/interfaces";
+import { EStatus, ETransactionType, IRequest } from "../utils/interfaces";
 import { confirmATransaction, createATransaction, getSelfBalance, getSelfTransactions } from "../services/transactions.service";
 
 export class TransactionsController {
-  public static async handleCreate(req: Request, res: Response) {
+  public static async handleCreate(req: IRequest, res: Response) {
     try {
-      const { senderId, recipientId, type, status, amount, externalPaymentRef, description } = req.body;
-      const transactions = await createATransaction({ senderId, recipientId, type, status, amount, externalPaymentRef, description });
+      const { clientId } = req.session;
+      const { recipientId, type, status, amount, externalPaymentRef, description } = req.body;
+      const isAddTransaction = type === ETransactionType.ADD;
+
+      const transactions = await createATransaction({ senderId: clientId, recipientId: isAddTransaction ? clientId : recipientId, type, status, amount, externalPaymentRef, description });
       res.status(201).json({
         status: EStatus.SUCCESS,
         code: 201,
