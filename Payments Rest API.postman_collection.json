@@ -1,0 +1,459 @@
+{
+	"info": {
+		"_postman_id": "b992aef7-c89b-4437-b010-d2b537050b44",
+		"name": "Payments Rest API",
+		"description": "#### This API collection allows you to interact with a payment system where users (clients) can log in, manage transactions (send, receive, and verify payments), and query their account details like balance and transaction history.\n\n### Endpoints:\n\n1. **Authentication (Auth)**:\n    \n    - **loginFirstClient**: Authenticates the first client by email and citizen identity document number. Retrieves and stores access and refresh tokens.\n        \n    - **loginSecondClient**: Authenticates the second client and stores their access and refresh tokens similarly.\n        \n2. **Client Management (Clients)**:\n    \n    - **firstClient**: Registers a new client with details like name, email, phone, and citizen identity document number. The client ID is stored after the response.\n        \n    - **secondClient**: Registers another client with similar details.\n        \n3. **Transactions (Transactions)**:\n    \n    - **addFounds**: Adds funds to a specified sender's account.\n        \n    - **ExternalPayment**: Handles an external payment with reference and amount, storing the transaction ID upon response.\n        \n    - **Payment**: Initiates a payment from one client to another, storing the transaction ID.\n        \n    - **ConfirmPayment**: Confirms a transaction using a token.\n        \n    - **SelfBalance**: Retrieves the balance of the currently authenticated user.\n        \n    - **SelfTransactions**: Retrieves all transactions for the authenticated user.\n        \n\n### Variables:\n\n- `host`: Default value is set to `http://localhost`.\n    \n- `port`: Default value is set to `3001`.\n    \n- `clientId`, `transactionId`, `accessToken`, `refreshAccessToken`: Dynamic variables set during the API lifecycle for making authenticated requests and handling client-specific actions.\n    \n\n### Authentication:\n\nBearer token authentication is used for transaction-related requests, with the access token dynamically set after login.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "17273002"
+	},
+	"item": [
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "loginFirstClient",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const res = pm.response.json();\r",
+									"const {token, refreshToken} = res.data;\r",
+									"pm.collectionVariables.set(\"acessToken\", token);\r",
+									"pm.collectionVariables.set(\"refreshAcessToken\", refreshToken);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"dojas64@gmail.com\",\r\n    \"citizenIdentityDocumentNumber\": \"data\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}:{{port}}/auth",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"auth"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "loginSecondClient",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const res = pm.response.json();\r",
+									"const {token, refreshToken} = res.data;\r",
+									"pm.collectionVariables.set(\"acessToken\", token);\r",
+									"pm.collectionVariables.set(\"refreshAcessToken\", refreshToken);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"alex@gmail.com\",\r\n    \"citizenIdentityDocumentNumber\": \"data\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}:{{port}}/auth",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"auth"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Clients",
+			"item": [
+				{
+					"name": "firstClient",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const res = pm.response.json();\r",
+									"const {id} = res.data;\r",
+									"pm.collectionVariables.set(\"clientId\", id);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"luis gerardo camara salinas\",\r\n    \"email\": \"doja1s64@gmail.com\",\r\n    \"phone\": \"529992674470\",\r\n    \"citizenIdentityDocumentNumber\": \"data\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}:{{port}}/clients",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"clients"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "secondClient",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"alex\",\r\n    \"email\": \"alex@gmail.com\",\r\n    \"phone\": \"529992674470\",\r\n    \"citizenIdentityDocumentNumber\": \"data\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}:{{port}}/clients",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"clients"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Transactions",
+			"item": [
+				{
+					"name": "addFounds",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"type\": \"add\",\r\n    \"amount\": 2\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}:{{port}}/transactions",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"transactions"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "ExternalPayment",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const res = pm.response.json();\r",
+									"const {id} = res.data;\r",
+									"pm.collectionVariables.set(\"transactionId\", id );"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"type\": \"external_payment\",\r\n    \"externalPaymentRef\": \"123dsvc\",\r\n    \"amount\": 1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}:{{port}}/transactions",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"transactions"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Payment",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const res = pm.response.json();\r",
+									"const {id} = res.data;\r",
+									"pm.collectionVariables.set(\"transactionId\", id );"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"type\": \"pay\",\r\n    \"recipientId\": 2,\r\n    \"amount\": 1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}:{{port}}/transactions",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"transactions"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "ConfirmPayment",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"token\": \"ykINCY\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}:{{port}}/transactions/{{transactionId}}",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"transactions",
+								"{{transactionId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "SelfBalance",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"senderId\": 1,\r\n    \"type\": \"add\",\r\n    \"amount\": 2\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}:{{port}}/transactions/self-balance",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"transactions",
+								"self-balance"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "SelfTransactions",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"type\": \"add\",\r\n    \"amount\": 2\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}:{{port}}/transactions/self",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"transactions",
+								"self"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"auth": {
+				"type": "bearer",
+				"bearer": [
+					{
+						"key": "token",
+						"value": "{{acessToken}}",
+						"type": "string"
+					}
+				]
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"packages": {},
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"packages": {},
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "host",
+			"value": "http://localhost",
+			"type": "string"
+		},
+		{
+			"key": "port",
+			"value": "3001",
+			"type": "string"
+		},
+		{
+			"key": "clientId",
+			"value": "1"
+		},
+		{
+			"key": "transactionId",
+			"value": "1"
+		},
+		{
+			"key": "acessToken",
+			"value": ""
+		},
+		{
+			"key": "refreshAcessToken",
+			"value": ""
+		}
+	]
+}
