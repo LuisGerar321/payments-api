@@ -73,9 +73,10 @@ export const getSelfBalance = async (clientId: number): Promise<ISelfBalance> =>
 
     const selfTransaction = await getSelfTransactions(clientId);
     const selfSent = selfTransaction.sent.reduce((sent, currSentTran) => {
+      if (currSentTran?.status === ETransactionStatus.PENDING) return sent;
       return sent + currSentTran.amount;
     }, 0);
-    const selfReceived = selfTransaction.sent.reduce((received, currReceivedTran) => {
+    const selfReceived = selfTransaction.received.reduce((received, currReceivedTran) => {
       return received + currReceivedTran.amount;
     }, 0);
 
