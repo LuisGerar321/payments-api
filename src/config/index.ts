@@ -6,7 +6,7 @@ dotenvConfig();
 export const config = {
   enviroment: process.env?.ENVIROMENT === "prod" ? "prod" : "dev",
   server: {
-    port: Number(process.env.HOST_PORT) || 3000,
+    port: Number(process.env.HOST_PORT) || 3001,
     host: process.env.HOST || "localhost",
   },
   db: {
